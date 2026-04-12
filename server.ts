@@ -26,6 +26,16 @@ async function startServer() {
 
   await ensureDataDir();
 
+  // Serve the logo from data directory if it exists (for both dev and prod)
+  app.get("/vietinbank-school-logo.png", (req, res) => {
+    const logoPath = path.join(DATA_DIR, "vietinbank-school-logo.png");
+    res.sendFile(logoPath, (err) => {
+      if (err) {
+        res.status(404).end();
+      }
+    });
+  });
+
   // API Routes
   app.post("/api/login", (req, res) => {
     const { username, password } = req.body;
@@ -72,11 +82,6 @@ async function startServer() {
     const distPath = path.join(__dirname, "dist");
     app.use(express.static(distPath));
     
-    // Serve the logo from data directory if it exists (for on-premise deployment)
-    app.get("/vietinbank-school-logo.png", (req, res) => {
-      res.sendFile(path.join(DATA_DIR, "vietinbank-school-logo.png"));
-    });
-
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
