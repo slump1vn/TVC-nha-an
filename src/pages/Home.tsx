@@ -41,15 +41,26 @@ export default function Home() {
     }
   };
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username === "nu.ttb" && password === "VietinBank2026$") {
-      setIsLoggedIn(true);
-      sessionStorage.setItem("vb_session", "true");
-      fetchLatestData();
-      toast.success("Đăng nhập thành công!");
-    } else {
-      toast.error("Sai tên đăng nhập hoặc mật khẩu!");
+    try {
+      const response = await fetch("/api/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.ok) {
+        setIsLoggedIn(true);
+        sessionStorage.setItem("vb_session", "true");
+        fetchLatestData();
+        toast.success("Đăng nhập thành công!");
+      } else {
+        toast.error("Sai tên đăng nhập hoặc mật khẩu!");
+      }
+    } catch (error) {
+      console.error("Login error:", error);
+      toast.error("Lỗi kết nối máy chủ!");
     }
   };
 
@@ -143,7 +154,7 @@ export default function Home() {
             VietinBank Schedule Generator
           </h1>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Chào mừng <strong>nu.ttb</strong>. Bạn có thể cập nhật lịch tuần tại đây.
+            Chào mừng bạn. Bạn có thể cập nhật lịch tuần tại đây.
           </p>
         </div>
         

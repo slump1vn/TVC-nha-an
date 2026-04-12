@@ -27,6 +27,18 @@ async function startServer() {
   await ensureDataDir();
 
   // API Routes
+  app.post("/api/login", (req, res) => {
+    const { username, password } = req.body;
+    const adminUser = process.env.ADMIN_USERNAME || "nu.ttb";
+    const adminPass = process.env.ADMIN_PASSWORD || "VietinBank2026$";
+
+    if (username === adminUser && password === adminPass) {
+      res.json({ success: true });
+    } else {
+      res.status(401).json({ success: false, error: "Invalid credentials" });
+    }
+  });
+
   app.get("/api/schedule/latest", async (req, res) => {
     try {
       const data = await fs.readFile(DATA_FILE, "utf-8");

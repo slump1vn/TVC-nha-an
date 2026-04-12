@@ -167,7 +167,7 @@ export default function ScheduleForm({ initialData, onSubmit, isSubmitting }: Sc
               ) : (
                 <>
                   <Save className="w-5 h-5 mr-2" />
-                  Tạo Website Lịch Tuần
+                  Cập nhật lịch tuần
                 </>
               )}
             </Button>
