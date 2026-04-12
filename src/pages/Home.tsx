@@ -171,10 +171,10 @@ export default function Home() {
         </div>
         <div className="text-center mb-12">
           <h1 className="text-4xl font-extrabold text-[#0054A6] mb-4">
-            VietinBank Schedule Generator
+            Cập nhật sơ đồ bàn ăn
           </h1>
           <p className="text-slate-600 max-w-2xl mx-auto">
-            Chào mừng bạn. Bạn có thể cập nhật lịch tuần tại đây.
+            Chào mừng bạn. Bạn có thể cập nhật sơ đồ bàn ăn tại đây.
           </p>
         </div>
         

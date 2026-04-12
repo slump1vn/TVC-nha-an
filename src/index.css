@@ -1,13 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
-@import "@fontsource-variable/geist";
+@import url('https://fonts.cdnfonts.com/css/svn-gilroy');
 
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: 'Geist Variable', sans-serif;
+    --font-sans: 'SVN-Gilroy', sans-serif;
     --color-vietin-blue: #0054A6;
     --color-vietin-red: #ED1C24;
     --color-vietin-light: #E6F0F9;

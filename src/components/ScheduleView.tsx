@@ -10,19 +10,10 @@ export default function ScheduleView({ data }: ScheduleViewProps) {
     <div className="min-h-screen bg-white p-0 md:p-4 lg:p-8 flex flex-col items-center">
       <div className="w-full max-w-[1920px] bg-white shadow-2xl overflow-hidden relative border border-slate-200 min-h-screen md:min-h-0">
         {/* Header Section */}
-        <div className="flex flex-col md:flex-row justify-between items-center p-4 md:p-8 border-b gap-4">
-          <div className="flex items-center gap-4">
-            <img 
-              src="https://www.vietinbank.vn/sites/vietinbank/img/logo.png" 
-              alt="VietinBank Logo" 
-              className="h-10 md:h-16 lg:h-20 object-contain"
-              referrerPolicy="no-referrer"
-            />
-          </div>
-          <h1 className="text-xl md:text-3xl lg:text-5xl font-bold text-[#ED1C24] uppercase tracking-tight text-center flex-1">
+        <div className="flex justify-center items-center p-4 md:p-8 border-b">
+          <h1 className="text-xl md:text-3xl lg:text-5xl font-bold text-[#ED1C24] uppercase tracking-tight text-center">
             LỊCH TUẦN ({data.weekRange})
           </h1>
-          <div className="hidden md:block w-10 md:w-16 lg:w-20"></div> {/* Spacer for symmetry */}
         </div>
 
         {/* Main Content Area */}
