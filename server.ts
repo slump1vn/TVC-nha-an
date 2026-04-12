@@ -71,6 +71,12 @@ async function startServer() {
   } else {
     const distPath = path.join(__dirname, "dist");
     app.use(express.static(distPath));
+    
+    // Serve the logo from root if it exists (for on-premise deployment)
+    app.get("/vietinbank-school-logo.png", (req, res) => {
+      res.sendFile(path.join(__dirname, "vietinbank-school-logo.png"));
+    });
+
     app.get("*", (req, res) => {
       res.sendFile(path.join(distPath, "index.html"));
     });
