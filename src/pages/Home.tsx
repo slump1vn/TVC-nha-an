@@ -97,7 +97,6 @@ export default function Home() {
 
       if (response.ok) {
         toast.success("Đã cập nhật lịch tuần thành công!");
-        navigate(`/view/latest`);
       } else {
         throw new Error("Failed to save");
       }
@@ -157,7 +156,14 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-slate-50 py-12">
       <div className="container px-4">
-        <div className="flex justify-end mb-4">
+        <div className="flex justify-between items-center mb-4">
+          <Button 
+            variant="outline" 
+            onClick={() => window.open('/view/latest', '_blank')}
+            className="border-[#0054A6] text-[#0054A6] hover:bg-[#0054A6] hover:text-white"
+          >
+            Xem lịch tuần hiện tại
+          </Button>
           <Button variant="ghost" onClick={handleLogout} className="text-slate-500 hover:text-red-600">
             <LogOut className="w-4 h-4 mr-2" />
             Đăng xuất
