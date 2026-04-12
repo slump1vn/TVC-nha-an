@@ -19,10 +19,14 @@ export default function Home() {
 
   // Check session on mount
   useEffect(() => {
-    const session = sessionStorage.getItem("vb_session");
-    if (session === "true") {
-      setIsLoggedIn(true);
-      fetchLatestData();
+    try {
+      const session = sessionStorage.getItem("vb_session");
+      if (session === "true") {
+        setIsLoggedIn(true);
+        fetchLatestData();
+      }
+    } catch (e) {
+      console.error("Session storage access failed:", e);
     }
   }, []);
 
@@ -32,7 +36,9 @@ export default function Home() {
       const response = await fetch("/api/schedule/latest");
       if (response.ok) {
         const data = await response.json();
-        setInitialData(data);
+        if (data && typeof data === 'object') {
+          setInitialData(data);
+        }
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -52,7 +58,11 @@ export default function Home() {
 
       if (response.ok) {
         setIsLoggedIn(true);
-        sessionStorage.setItem("vb_session", "true");
+        try {
+          sessionStorage.setItem("vb_session", "true");
+        } catch (e) {
+          console.error("Failed to set session storage:", e);
+        }
         fetchLatestData();
         toast.success("Đăng nhập thành công!");
       } else {
@@ -66,7 +76,11 @@ export default function Home() {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    sessionStorage.removeItem("vb_session");
+    try {
+      sessionStorage.removeItem("vb_session");
+    } catch (e) {
+      console.error("Failed to remove session storage:", e);
+    }
     toast.info("Đã đăng xuất");
   };
 

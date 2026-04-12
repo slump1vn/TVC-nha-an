@@ -24,17 +24,24 @@ interface ScheduleFormProps {
   isSubmitting?: boolean;
 }
 
+const generateId = () => {
+  if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+    return crypto.randomUUID();
+  }
+  return Math.random().toString(36).substring(2, 15);
+};
+
 export default function ScheduleForm({ initialData, onSubmit, isSubmitting }: ScheduleFormProps) {
   const [weekRange, setWeekRange] = useState(initialData?.weekRange || "");
   const [entries, setEntries] = useState<ScheduleEntry[]>(
-    initialData?.entries || [
-      { id: crypto.randomUUID(), date: "", className: "", diningArea: "" },
-    ]
+    (initialData && Array.isArray(initialData.entries)) 
+      ? initialData.entries 
+      : [{ id: generateId(), date: "", className: "", diningArea: "" }]
   );
 
   React.useEffect(() => {
-    if (initialData) {
-      setWeekRange(initialData.weekRange);
+    if (initialData && Array.isArray(initialData.entries)) {
+      setWeekRange(initialData.weekRange || "");
       setEntries(initialData.entries);
     }
   }, [initialData]);
@@ -42,7 +49,7 @@ export default function ScheduleForm({ initialData, onSubmit, isSubmitting }: Sc
   const addEntry = () => {
     setEntries([
       ...entries,
-      { id: crypto.randomUUID(), date: "", className: "", diningArea: "" },
+      { id: generateId(), date: "", className: "", diningArea: "" },
     ]);
   };
 
