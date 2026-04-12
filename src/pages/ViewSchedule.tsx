@@ -4,8 +4,6 @@ import { ChevronLeft, Share2, Loader2, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ScheduleView from "@/components/ScheduleView";
 import { WeeklySchedule } from "@/components/ScheduleForm";
-import { db } from "@/firebase";
-import { doc, onSnapshot } from "firebase/firestore";
 import { toast } from "sonner";
 
 export default function ViewSchedule() {
@@ -17,24 +15,27 @@ export default function ViewSchedule() {
   useEffect(() => {
     if (!id) return;
     
-    setLoading(true);
-    const docRef = doc(db, "schedules", id);
-    
-    // Use onSnapshot for real-time updates. 
-    // This is superior to a 5s reload as it updates instantly when data changes.
-    const unsubscribe = onSnapshot(docRef, (docSnap) => {
-      if (docSnap.exists()) {
-        setData(docSnap.data() as WeeklySchedule);
-        setLastUpdated(new Date());
+    const fetchSchedule = async () => {
+      try {
+        const response = await fetch("/api/schedule/latest");
+        if (response.ok) {
+          const newData = await response.json();
+          setData(newData);
+          setLastUpdated(new Date());
+        }
+      } catch (error) {
+        console.error("Error fetching schedule:", error);
+      } finally {
+        setLoading(false);
       }
-      setLoading(false);
-    }, (error) => {
-      console.error("Error fetching schedule:", error);
-      toast.error("Không thể tải dữ liệu lịch tuần.");
-      setLoading(false);
-    });
+    };
 
-    return () => unsubscribe();
+    fetchSchedule();
+
+    // Poll every 5 seconds for updates
+    const interval = setInterval(fetchSchedule, 5000);
+
+    return () => clearInterval(interval);
   }, [id]);
 
   if (loading && !data) {

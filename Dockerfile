@@ -13,15 +13,27 @@ COPY . .
 # Build the application
 RUN npm run build
 
-# Stage 2: Serve the application with Nginx
-FROM nginx:stable-alpine
+# Stage 2: Run the Express server
+FROM node:20-alpine
 
-# Copy the built assets from the build stage
-COPY --from=build /app/dist /usr/share/nginx/html
+WORKDIR /app
 
-# Copy custom nginx config for SPA routing support
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Copy package files and install production dependencies
+COPY package*.json ./
+RUN npm install --production
 
-EXPOSE 80
+# Install tsx globally or as a dependency to run the server
+RUN npm install -g tsx
 
-CMD ["nginx", "-g", "daemon off;"]
+# Copy built assets and server code
+COPY --from=build /app/dist ./dist
+COPY --from=build /app/server.ts ./
+COPY --from=build /app/package.json ./
+
+# Create data directory for local storage
+RUN mkdir -p data
+
+EXPOSE 3000
+
+# Start the server
+CMD ["npm", "start"]

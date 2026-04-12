@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import ScheduleForm, { WeeklySchedule } from "@/components/ScheduleForm";
-import { db } from "@/firebase";
-import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { toast } from "sonner";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,10 +29,10 @@ export default function Home() {
   const fetchLatestData = async () => {
     setIsLoading(true);
     try {
-      const docRef = doc(db, "schedules", "latest");
-      const docSnap = await getDoc(docRef);
-      if (docSnap.exists()) {
-        setInitialData(docSnap.data() as WeeklySchedule);
+      const response = await fetch("/api/schedule/latest");
+      if (response.ok) {
+        const data = await response.json();
+        setInitialData(data);
       }
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -64,13 +62,20 @@ export default function Home() {
   const handleSubmit = async (data: WeeklySchedule) => {
     setIsSubmitting(true);
     try {
-      const docRef = doc(db, "schedules", "latest");
-      await setDoc(docRef, {
-        ...data,
-        updatedAt: serverTimestamp(),
+      const response = await fetch("/api/schedule/latest", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
-      toast.success("Đã cập nhật lịch tuần thành công!");
-      navigate(`/view/latest`);
+
+      if (response.ok) {
+        toast.success("Đã cập nhật lịch tuần thành công!");
+        navigate(`/view/latest`);
+      } else {
+        throw new Error("Failed to save");
+      }
     } catch (error) {
       console.error("Error saving schedule:", error);
       toast.error("Có lỗi xảy ra khi cập nhật lịch tuần.");
