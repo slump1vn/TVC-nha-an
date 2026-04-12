@@ -1,0 +1,5 @@
+{
+  "name": "VietinBank Schedule Generator",
+  "description": "A tool to generate and share weekly training schedules with a professional layout based on VietinBank's branding.",
+  "requestFramePermissions": []
+}

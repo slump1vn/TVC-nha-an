@@ -1,0 +1,155 @@
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import ScheduleForm, { WeeklySchedule } from "@/components/ScheduleForm";
+import { db } from "@/firebase";
+import { doc, setDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { toast } from "sonner";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Lock, LogOut, Loader2 } from "lucide-react";
+
+export default function Home() {
+  const navigate = useNavigate();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [initialData, setInitialData] = useState<WeeklySchedule | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(false);
+
+  // Check session on mount
+  useEffect(() => {
+    const session = sessionStorage.getItem("vb_session");
+    if (session === "true") {
+      setIsLoggedIn(true);
+      fetchLatestData();
+    }
+  }, []);
+
+  const fetchLatestData = async () => {
+    setIsLoading(true);
+    try {
+      const docRef = doc(db, "schedules", "latest");
+      const docSnap = await getDoc(docRef);
+      if (docSnap.exists()) {
+        setInitialData(docSnap.data() as WeeklySchedule);
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleLogin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (username === "nu.ttb" && password === "VietinBank2026$") {
+      setIsLoggedIn(true);
+      sessionStorage.setItem("vb_session", "true");
+      fetchLatestData();
+      toast.success("Đăng nhập thành công!");
+    } else {
+      toast.error("Sai tên đăng nhập hoặc mật khẩu!");
+    }
+  };
+
+  const handleLogout = () => {
+    setIsLoggedIn(false);
+    sessionStorage.removeItem("vb_session");
+    toast.info("Đã đăng xuất");
+  };
+
+  const handleSubmit = async (data: WeeklySchedule) => {
+    setIsSubmitting(true);
+    try {
+      const docRef = doc(db, "schedules", "latest");
+      await setDoc(docRef, {
+        ...data,
+        updatedAt: serverTimestamp(),
+      });
+      toast.success("Đã cập nhật lịch tuần thành công!");
+      navigate(`/view/latest`);
+    } catch (error) {
+      console.error("Error saving schedule:", error);
+      toast.error("Có lỗi xảy ra khi cập nhật lịch tuần.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (!isLoggedIn) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <Card className="w-full max-w-md border-t-4 border-t-[#0054A6]">
+          <CardHeader className="text-center">
+            <div className="mx-auto w-12 h-12 bg-[#0054A6]/10 rounded-full flex items-center justify-center mb-4">
+              <Lock className="w-6 h-6 text-[#0054A6]" />
+            </div>
+            <CardTitle className="text-2xl font-bold text-[#0054A6]">
+              Đăng nhập hệ thống
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <form onSubmit={handleLogin} className="space-y-4">
+              <div className="space-y-2">
+                <Label htmlFor="username">Tên đăng nhập</Label>
+                <Input
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="nu.ttb"
+                  required
+                />
+              </div>
+              <div className="space-y-2">
+                <Label htmlFor="password">Mật khẩu</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  required
+                />
+              </div>
+              <Button type="submit" className="w-full bg-[#0054A6] hover:bg-[#004488]">
+                Đăng nhập
+              </Button>
+            </form>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-slate-50 py-12">
+      <div className="container px-4">
+        <div className="flex justify-end mb-4">
+          <Button variant="ghost" onClick={handleLogout} className="text-slate-500 hover:text-red-600">
+            <LogOut className="w-4 h-4 mr-2" />
+            Đăng xuất
+          </Button>
+        </div>
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-extrabold text-[#0054A6] mb-4">
+            VietinBank Schedule Generator
+          </h1>
+          <p className="text-slate-600 max-w-2xl mx-auto">
+            Chào mừng <strong>nu.ttb</strong>. Bạn có thể cập nhật lịch tuần tại đây.
+          </p>
+        </div>
+        
+        {isLoading ? (
+          <div className="flex justify-center py-12">
+            <Loader2 className="w-8 h-8 animate-spin text-[#0054A6]" />
+          </div>
+        ) : (
+          <ScheduleForm initialData={initialData} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
+        )}
+      </div>
+    </div>
+  );
+}

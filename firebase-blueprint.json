@@ -1,0 +1,31 @@
+{
+  "entities": {
+    "Schedule": {
+      "title": "Weekly Schedule",
+      "description": "A weekly training schedule with class entries and dining information.",
+      "type": "object",
+      "properties": {
+        "weekRange": {
+          "type": "string",
+          "description": "The date range for the week (e.g., 08– 14.9.2025)"
+        },
+        "entries": {
+          "type": "array",
+          "description": "List of class entries for the week"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "When the schedule was created"
+        }
+      },
+      "required": ["weekRange", "entries"]
+    }
+  },
+  "firestore": {
+    "/schedules/{scheduleId}": {
+      "schema": "Schedule",
+      "description": "Collection of generated weekly schedules"
+    }
+  }
+}

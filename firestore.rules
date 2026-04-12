@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: schedules
+    // Document ID: auto-generated UUID
+    // Fields:
+    //   - weekRange: string (required) - The week range text
+    //   - entries: list (required) - Array of schedule entry objects
+    //   - createdAt: timestamp (optional) - Server timestamp
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isValidSchedule(data) {
+      return data.weekRange is string && 
+             data.weekRange.size() > 0 && 
+             data.weekRange.size() < 200 &&
+             data.entries is list &&
+             data.entries.size() > 0 &&
+             data.entries.size() <= 50;
+    }
+
+    match /schedules/{scheduleId} {
+      // Allow anyone to read a schedule if they have the ID (fix link)
+      allow read: if true;
+      
+      // Allow creation and updates of schedules
+      // In a real app, we would restrict updates to authorized users
+      allow create, update: if isValidSchedule(request.resource.data);
+      
+      allow delete: if false;
+    }
+  }
+}
