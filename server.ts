@@ -28,10 +28,15 @@ async function startServer() {
 
   // Serve the logo from data directory if it exists (for both dev and prod)
   app.get("/vietinbank-school-logo.png", (req, res) => {
-    const logoPath = path.join(DATA_DIR, "vietinbank-school-logo.png");
+    const logoPath = path.resolve(DATA_DIR, "vietinbank-school-logo.png");
+    console.log(`Attempting to serve logo from: ${logoPath}`);
+    
     res.sendFile(logoPath, (err) => {
       if (err) {
-        res.status(404).end();
+        console.error(`Error serving logo from ${logoPath}:`, err);
+        res.status(404).send("Logo not found");
+      } else {
+        console.log(`Successfully served logo from: ${logoPath}`);
       }
     });
   });
