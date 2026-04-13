@@ -2,42 +2,12 @@
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
-/* Local Font Fallback - Ensure font files are placed in /src/fonts/ */
-@font-face {
-    font-family: 'SVN-Gilroy';
-    src: url('./fonts/SVN-Gilroy-Regular.woff2') format('woff2'),
-         url('./fonts/SVN-Gilroy-Regular.woff') format('woff');
-    font-weight: 400;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'SVN-Gilroy';
-    src: url('./fonts/SVN-Gilroy-Medium.woff2') format('woff2'),
-         url('./fonts/SVN-Gilroy-Medium.woff') format('woff');
-    font-weight: 500;
-    font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'SVN-Gilroy';
-    src: url('./fonts/SVN-Gilroy-Bold.woff2') format('woff2'),
-         url('./fonts/SVN-Gilroy-Bold.woff') format('woff');
-    font-weight: 700;
-    font-style: normal;
-    font-display: swap;
-}
-
-/* CDN Fallback (Optional, remove if you want strictly local) */
-@import url('https://fonts.cdnfonts.com/css/svn-gilroy');
-
+/* Font Fallback: SVN-Gilroy (CDN) -> Outfit (Google Fonts) -> Sans-serif */
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
     --font-heading: var(--font-sans);
-    --font-sans: 'SVN-Gilroy', sans-serif;
+    --font-sans: 'SVN-Gilroy', 'Outfit', sans-serif;
     --color-vietin-blue: #0054A6;
     --color-vietin-red: #ED1C24;
     --color-vietin-light: #E6F0F9;
