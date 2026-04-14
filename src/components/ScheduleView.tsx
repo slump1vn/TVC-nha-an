@@ -7,10 +7,10 @@ interface ScheduleViewProps {
 
 export default function ScheduleView({ data }: ScheduleViewProps) {
   return (
-    <div className="min-h-screen bg-white p-0 md:p-4 lg:p-8 flex flex-col items-center">
-      <div className="w-full max-w-[1920px] bg-white shadow-2xl overflow-hidden relative border border-slate-200 min-h-screen md:min-h-0">
+    <div className="min-h-screen bg-white flex flex-col">
+      <div className="w-full bg-white overflow-hidden relative flex-1 flex flex-col">
         {/* Header Section */}
-        <div className="flex justify-between items-center p-4 md:p-8 border-b">
+        <div className="flex justify-between items-center p-4 md:p-6 border-b shrink-0">
           <div className="hidden md:block w-20 md:w-32 lg:w-48"></div> {/* Left spacer for symmetry */}
           <h1 className="text-xl md:text-3xl lg:text-5xl font-bold text-[#ED1C24] uppercase tracking-tight text-center flex-1">
             LỊCH TUẦN ({data.weekRange})
@@ -35,14 +35,14 @@ export default function ScheduleView({ data }: ScheduleViewProps) {
           </div>
 
           {/* Table Content */}
-          <div className="flex-1 overflow-x-auto">
-            <table className="w-full border-collapse table-fixed md:table-auto">
-              <thead>
+          <div className="flex-1 overflow-auto">
+            <table className="w-full border-collapse">
+              <thead className="sticky top-0 z-10">
                 <tr className="bg-[#0054A6] text-white">
-                  <th className="p-2 md:p-4 border border-[#0054A6] text-center w-10 md:w-16 lg:w-24 text-sm md:text-base lg:text-xl">TT</th>
-                  <th className="p-2 md:p-4 border border-[#0054A6] text-center w-24 md:w-40 lg:w-64 text-sm md:text-base lg:text-xl">Ngày diễn ra Khóa học</th>
-                  <th className="p-2 md:p-4 border border-[#0054A6] text-center text-sm md:text-base lg:text-xl">Tên lớp học</th>
-                  <th className="p-2 md:p-4 border border-[#0054A6] text-center w-32 md:w-64 lg:w-96 text-sm md:text-base lg:text-xl">Khu vực ăn</th>
+                  <th className="p-3 md:p-6 border border-[#0054A6] text-center w-12 md:w-20 lg:w-32 text-base md:text-xl lg:text-3xl font-black">TT</th>
+                  <th className="p-3 md:p-6 border border-[#0054A6] text-center w-28 md:w-48 lg:w-80 text-base md:text-xl lg:text-3xl font-black">Ngày diễn ra Khóa học</th>
+                  <th className="p-3 md:p-6 border border-[#0054A6] text-center text-base md:text-xl lg:text-3xl font-black">Tên lớp học</th>
+                  <th className="p-3 md:p-6 border border-[#0054A6] text-center w-36 md:w-72 lg:w-[500px] text-base md:text-xl lg:text-3xl font-black">Khu vực ăn</th>
                 </tr>
               </thead>
               <tbody>
@@ -51,29 +51,20 @@ export default function ScheduleView({ data }: ScheduleViewProps) {
                     key={entry.id}
                     className={index % 2 === 0 ? "bg-white" : "bg-[#E6F0F9]"}
                   >
-                    <td className="p-2 md:p-4 border border-slate-200 text-center font-medium text-[#0054A6] text-sm md:text-lg lg:text-2xl">
+                    <td className="p-3 md:p-6 border border-slate-300 text-center font-bold text-[#0054A6] text-lg md:text-2xl lg:text-4xl">
                       {index + 1}
                     </td>
-                    <td className="p-2 md:p-4 border border-slate-200 text-center text-slate-700 text-sm md:text-base lg:text-xl">
+                    <td className="p-3 md:p-6 border border-slate-300 text-center text-slate-900 font-bold text-base md:text-xl lg:text-3xl">
                       {entry.date}
                     </td>
-                    <td className="p-2 md:p-4 border border-slate-200 text-slate-800 font-medium text-sm md:text-base lg:text-xl">
+                    <td className="p-3 md:p-6 border border-slate-300 text-slate-900 font-extrabold text-base md:text-xl lg:text-3xl leading-tight">
                       {entry.className}
                     </td>
-                    <td className="p-2 md:p-4 border border-slate-200 text-center text-slate-700 text-sm md:text-base lg:text-xl">
+                    <td className="p-3 md:p-6 border border-slate-300 text-center text-slate-900 font-bold text-base md:text-xl lg:text-3xl">
                       <div className="whitespace-pre-line">
                         {entry.diningArea}
                       </div>
                     </td>
-                  </tr>
-                ))}
-                {/* Fill empty rows if needed to maintain layout height */}
-                {Array.from({ length: Math.max(0, 10 - data.entries.length) }).map((_, i) => (
-                  <tr key={`empty-${i}`} className={(data.entries.length + i) % 2 === 0 ? "bg-white" : "bg-[#E6F0F9]"}>
-                    <td className="p-2 md:p-4 border border-slate-200 h-12 md:h-16 lg:h-24"></td>
-                    <td className="p-2 md:p-4 border border-slate-200"></td>
-                    <td className="p-2 md:p-4 border border-slate-200"></td>
-                    <td className="p-2 md:p-4 border border-slate-200"></td>
                   </tr>
                 ))}
               </tbody>
@@ -82,7 +73,7 @@ export default function ScheduleView({ data }: ScheduleViewProps) {
         </div>
 
         {/* Footer Accent */}
-        <div className="h-4 bg-gradient-to-r from-[#0054A6] via-[#ED1C24] to-[#0054A6]"></div>
+        <div className="h-2 bg-gradient-to-r from-[#0054A6] via-[#ED1C24] to-[#0054A6] shrink-0"></div>
       </div>
 
       {/* Print/Share Button (Removed as requested) */}
